@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MapPin, Compass, Book, Trophy, User, Camera } from 'lucide-react';
 import DiscoveryScanner from './DiscoveryScanner';
+import LandmarkDetail from './LandmarkDetail';
 
 interface Landmark {
   id: number;
@@ -17,6 +18,9 @@ const WatercolorAtlasExplore = () => {
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
   const [showScanner, setShowScanner] = useState(false);
   const [landmarkToScan, setLandmarkToScan] = useState<Landmark | null>(null);
+  const [landmarkToScanUnknown, setLandmarkToScanUnknown] = useState<boolean>(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [landmarkToShow, setLandmarkToShow] = useState<Landmark | null>(null);
 
   // Landmark data - discovered vs undiscovered
   const [landmarks, setLandmarks] = useState([
@@ -42,8 +46,9 @@ const WatercolorAtlasExplore = () => {
   };
 
   // Launch scanner for selected landmark
-  const launchScanner = (landmark: Landmark) => {
+  const launchScanner = (landmark: Landmark, unknown: boolean = false) => {
     setLandmarkToScan(landmark);
+    setLandmarkToScanUnknown(unknown);
     setShowScanner(true);
     setSelectedLandmark(null);
   };
@@ -210,12 +215,18 @@ const WatercolorAtlasExplore = () => {
                   A magnificent example of Norwegian Gothic architecture, this cathedral has stood as a pilgrimage destination for centuries...
                 </p>
                 <div className="flex gap-2">
-                  <button className="flex-1 bg-gradient-to-r from-amber-600 to-orange-500 text-white py-3 rounded-xl font-medium shadow-md hover:shadow-lg transition-all">
+                  <button 
+                    onClick={() => {
+                      setLandmarkToShow(selectedLandmark);
+                      setShowDetail(true);
+                    }}
+                    className="flex-1 bg-gradient-to-r from-amber-600 to-orange-500 text-white py-3 rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+                  >
                     Learn More
                   </button>
-                  <button className="px-4 bg-amber-100 text-amber-800 py-3 rounded-xl font-medium hover:bg-amber-200 transition-all">
+                  {/* <button className="px-4 bg-amber-100 text-amber-800 py-3 rounded-xl font-medium hover:bg-amber-200 transition-all">
                     <Camera className="w-5 h-5" />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ) : (
@@ -256,11 +267,23 @@ const WatercolorAtlasExplore = () => {
       {showScanner && landmarkToScan && (
         <DiscoveryScanner
           landmark={landmarkToScan}
+          isUnknown={landmarkToScanUnknown}
           onClose={() => {
             setShowScanner(false);
             setLandmarkToScan(null);
           }}
           onDiscoveryComplete={handleDiscoveryComplete}
+        />
+      )}
+
+      {/* Landmark Detail Modal */}
+      {showDetail && landmarkToShow && (
+        <LandmarkDetail 
+          landmark={landmarkToShow}
+          onClose={() => {
+            setShowDetail(false);
+            setLandmarkToShow(null);
+          }}
         />
       )}
     </div>
