@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MapPin, Compass, Book, Trophy, User, Camera } from 'lucide-react';
 import DiscoveryScanner from './DiscoveryScanner';
 import LandmarkDetail from './LandmarkDetail';
+import Museum from './Museum';
 
 interface Landmark {
   id: number;
@@ -18,9 +19,9 @@ const WatercolorAtlasExplore = () => {
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
   const [showScanner, setShowScanner] = useState(false);
   const [landmarkToScan, setLandmarkToScan] = useState<Landmark | null>(null);
-  const [landmarkToScanUnknown, setLandmarkToScanUnknown] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState(false);
   const [landmarkToShow, setLandmarkToShow] = useState<Landmark | null>(null);
+  const [showMuseum, setShowMuseum] = useState(false);
 
   // Landmark data - discovered vs undiscovered
   const [landmarks, setLandmarks] = useState([
@@ -46,9 +47,8 @@ const WatercolorAtlasExplore = () => {
   };
 
   // Launch scanner for selected landmark
-  const launchScanner = (landmark: Landmark, unknown: boolean = false) => {
+  const launchScanner = (landmark: Landmark) => {
     setLandmarkToScan(landmark);
-    setLandmarkToScanUnknown(unknown);
     setShowScanner(true);
     setSelectedLandmark(null);
   };
@@ -80,7 +80,11 @@ const WatercolorAtlasExplore = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <button className="p-2 rounded-full bg-white shadow-sm">
+            <button 
+              className="p-2 rounded-full bg-white shadow-sm"
+              onClick={() => setShowMuseum(true)}
+              aria-label="Open Digital Museum"
+            >
               <Book className="w-5 h-5 text-amber-800" />
             </button>
             <button className="p-2 rounded-full bg-white shadow-sm">
@@ -267,7 +271,6 @@ const WatercolorAtlasExplore = () => {
       {showScanner && landmarkToScan && (
         <DiscoveryScanner
           landmark={landmarkToScan}
-          isUnknown={landmarkToScanUnknown}
           onClose={() => {
             setShowScanner(false);
             setLandmarkToScan(null);
@@ -284,6 +287,15 @@ const WatercolorAtlasExplore = () => {
             setShowDetail(false);
             setLandmarkToShow(null);
           }}
+        />
+      )}
+
+      {/* Digital Museum Modal */}
+      {showMuseum && (
+        <Museum 
+          cityName="Trondheim"
+          items={landmarks}
+          onClose={() => setShowMuseum(false)}
         />
       )}
     </div>

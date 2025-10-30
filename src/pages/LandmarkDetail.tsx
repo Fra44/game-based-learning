@@ -12,9 +12,10 @@ interface LandmarkBasic {
 interface LandmarkDetailProps {
   landmark: LandmarkBasic;
   onClose: () => void;
+  photos?: string[]; // optional list of photo URLs
 }
 
-const LandmarkDetail = ({ landmark, onClose }: LandmarkDetailProps) => {
+const LandmarkDetail = ({ landmark, onClose, photos = [] }: LandmarkDetailProps) => {
   const [aiSummary, setAiSummary] = useState('');
   const [earnedXP, setEarnedXP] = useState(0);
   const [badge, setBadge] = useState('');
@@ -86,7 +87,7 @@ const LandmarkDetail = ({ landmark, onClose }: LandmarkDetailProps) => {
         {/* Image */}
         <div className="overflow-hidden rounded-2xl border border-white/10 mb-6 shadow-xl">
           <img 
-            src={landmark.name === "Nidaros Cathedral" ? "src/assets/nidaros_cathedral.jpg": `https://placehold.co/1200x700/png?text=${encodeURIComponent(landmark.name)}`}
+            src={`https://placehold.co/1200x700/png?text=${encodeURIComponent(landmark.name)}`}
             alt={`${landmark.name} placeholder`} 
             className="w-full h-auto object-cover"
             loading="lazy"
@@ -100,6 +101,25 @@ const LandmarkDetail = ({ landmark, onClose }: LandmarkDetailProps) => {
             <h3 className="text-white font-semibold">Overview</h3>
           </div>
           <p className="text-white/80 leading-relaxed">{aiSummary}</p>
+        </div>
+
+        {/* Photos Gallery (placeholder or provided) */}
+        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 mb-6 border border-white/10">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Camera className="w-5 h-5 text-white" />
+              <h3 className="text-white font-semibold">Photos</h3>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {(photos.length > 0 ? photos : [
+              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}`,
+              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+2`,
+              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+3`
+            ]).map((src, idx) => (
+              <img key={idx} src={src} alt={`${landmark.name} ${idx+1}`} className="w-full h-28 object-cover rounded-lg border border-white/10" />
+            ))}
+          </div>
         </div>
 
         {/* Rewards & Meta */}
@@ -137,7 +157,7 @@ const LandmarkDetail = ({ landmark, onClose }: LandmarkDetailProps) => {
         </div>
 
         {/* Trivia */}
-        {false && <div className="mt-6 p-4 bg-cyan-500/10 backdrop-blur-sm rounded-xl border border-cyan-500/20">
+        <div className="mt-6 p-4 bg-cyan-500/10 backdrop-blur-sm rounded-xl border border-cyan-500/20">
           <h4 className="text-cyan-400 font-semibold mb-2 flex items-center gap-2">
             <Star className="w-4 h-4" />
             Did you know?
@@ -145,7 +165,7 @@ const LandmarkDetail = ({ landmark, onClose }: LandmarkDetailProps) => {
           <p className="text-white/70 text-sm">
             This landmark often appears in local postcards and travel journals. Explore nearby sites to continue your discovery streak!
           </p>
-        </div>}
+        </div>
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ interface DiscoveryScannerProps {
   landmark: Landmark | null;
   onClose: () => void;
   onDiscoveryComplete: (landmarkId: number) => void;
-  isUnknown?: boolean;
 }
 
 type ScanningState = 'initializing' | 'scanning' | 'recognizing' | 'discovered' | 'summary';
@@ -21,8 +20,7 @@ type ScanningState = 'initializing' | 'scanning' | 'recognizing' | 'discovered' 
 const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({ 
   landmark, 
   onClose, 
-  onDiscoveryComplete, 
-  isUnknown = false
+  onDiscoveryComplete 
 }) => {
   const [scanningState, setScanningState] = useState<ScanningState>('initializing');
   const [scanProgress, setScanProgress] = useState(0);
@@ -51,7 +49,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
         });
       }, 100);
 
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 2500));
       clearInterval(scanInterval);
       setScanProgress(100);
 
@@ -115,27 +113,24 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
       {/* AR Camera View Simulation */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
         {/* Camera feed simulation with subtle animation */}
-        <div
+        <div 
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage:
-              'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23noise)" opacity="0.05" /%3E%3C/svg%3E")',
-            animation: "grain 0.5s steps(10) infinite",
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23noise)" opacity="0.05" /%3E%3C/svg%3E")',
+            animation: 'grain 0.5s steps(10) infinite'
           }}
         />
-
+        
         {/* Scanning Grid Overlay */}
-        {(scanningState === "scanning" || scanningState === "recognizing") && (
+        {(scanningState === 'scanning' || scanningState === 'recognizing') && (
           <div className="absolute inset-0 grid grid-cols-8 grid-rows-12 opacity-30">
             {Array.from({ length: 96 }).map((_, i) => (
-              <div
-                key={i}
+              <div 
+                key={i} 
                 className="border border-cyan-400"
                 style={{
-                  animation: `pulse ${
-                    Math.random() * 2 + 1
-                  }s ease-in-out infinite`,
-                  animationDelay: `${Math.random() * 0.5}s`,
+                  animation: `pulse ${Math.random() * 2 + 1}s ease-in-out infinite`,
+                  animationDelay: `${Math.random() * 0.5}s`
                 }}
               />
             ))}
@@ -150,7 +145,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
             <Camera className="w-6 h-6 text-white" />
             <span className="text-white font-medium">AR Scanner</span>
           </div>
-          <button
+          <button 
             onClick={onClose}
             className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
           >
@@ -161,14 +156,14 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
 
       {/* Center Content - State dependent */}
       <div className="absolute inset-0 flex items-center justify-center">
-        {scanningState === "initializing" && (
+        {scanningState === 'initializing' && (
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
             <p className="text-white text-lg">Initializing AR Camera...</p>
           </div>
         )}
 
-        {scanningState === "scanning" && (
+        {scanningState === 'scanning' && (
           <div className="text-center px-6">
             {/* Target Reticle */}
             <div className="relative w-64 h-64 mx-auto mb-6">
@@ -177,35 +172,28 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
               <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-cyan-400 animate-pulse" />
               <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-cyan-400 animate-pulse" />
               <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-cyan-400 animate-pulse" />
-
+              
               {/* Center crosshair */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-ping" />
               </div>
-
+              
               {/* Scanning line */}
-              <div
+              <div 
                 className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
                 style={{
                   top: `${scanProgress}%`,
-                  transition: "top 0.1s linear",
+                  transition: 'top 0.1s linear'
                 }}
               />
             </div>
-
+            
             <p className="text-white text-xl mb-2">Scanning landmark...</p>
-            {isUnknown ? (
-              <p className="text-cyan-400 text-sm mb-4">
-                Point camera at {landmark.name}
-              </p>
-            ) : (
-              <p className="text-cyan-400 text-sm mb-4">
-                Point camera at a landmark to begin scanning
-              </p>
-            )}
+            <p className="text-cyan-400 text-sm mb-4">Point camera at {landmark.name}</p>
+            
             {/* Progress bar */}
             <div className="w-64 h-2 bg-white/20 rounded-full mx-auto overflow-hidden">
-              <div
+              <div 
                 className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-100"
                 style={{ width: `${scanProgress}%` }}
               />
@@ -214,7 +202,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
           </div>
         )}
 
-        {scanningState === "recognizing" && (
+        {scanningState === 'recognizing' && (
           <div className="text-center">
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mx-auto mb-4 animate-pulse">
@@ -230,7 +218,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
           </div>
         )}
 
-        {scanningState === "discovered" && (
+        {scanningState === 'discovered' && (
           <div className="text-center px-6 relative">
             {/* Confetti Animation */}
             {showConfetti && (
@@ -242,23 +230,15 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
                     style={{
                       left: `${50 + (Math.random() - 0.5) * 60}%`,
                       top: `${50}%`,
-                      backgroundColor: [
-                        "#fbbf24",
-                        "#f59e0b",
-                        "#ef4444",
-                        "#ec4899",
-                        "#8b5cf6",
-                      ][Math.floor(Math.random() * 5)],
-                      animation: `confetti ${
-                        1 + Math.random()
-                      }s ease-out forwards`,
-                      animationDelay: `${Math.random() * 0.5}s`,
+                      backgroundColor: ['#fbbf24', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)],
+                      animation: `confetti ${1 + Math.random()}s ease-out forwards`,
+                      animationDelay: `${Math.random() * 0.5}s`
                     }}
                   />
                 ))}
               </div>
             )}
-
+            
             {/* Success Icon */}
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -268,41 +248,35 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
                 <CheckCircle className="w-16 h-16 text-white" strokeWidth={3} />
               </div>
             </div>
-
+            
             {/* Discovery Text */}
             <h2 className="text-4xl font-bold text-white mb-2 animate-bounce">
               Discovery Unlocked! 🎉
             </h2>
-            <h3 className="text-2xl font-serif text-yellow-400 mb-6">
-              {landmark.name}
-            </h3>
-
+            <h3 className="text-2xl font-serif text-yellow-400 mb-6">{landmark.name}</h3>
+            
             {/* Rewards */}
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border-2 border-yellow-400">
                 <div className="flex items-center gap-2">
                   <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-                  <span className="text-white font-bold text-xl">
-                    +{earnedXP} XP
-                  </span>
+                  <span className="text-white font-bold text-xl">+{earnedXP} XP</span>
                 </div>
               </div>
             </div>
-
+            
             <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border-2 border-purple-400 inline-block">
               <div className="flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-purple-400" />
                 <span className="text-white font-medium">{badge}</span>
               </div>
             </div>
-
-            <p className="text-white/70 text-sm mt-6">
-              Loading landmark information...
-            </p>
+            
+            <p className="text-white/70 text-sm mt-6">Loading landmark information...</p>
           </div>
         )}
 
-        {scanningState === "summary" && (
+        {scanningState === 'summary' && (
           <div className="absolute inset-0 bg-gradient-to-b from-black/90 to-black/95 overflow-y-auto">
             <div className="max-w-2xl mx-auto p-6 pt-20">
               {/* Header */}
@@ -310,9 +284,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-8 h-8 text-white" fill="white" />
                 </div>
-                <h2 className="text-3xl font-serif text-white mb-2">
-                  {landmark.name}
-                </h2>
+                <h2 className="text-3xl font-serif text-white mb-2">{landmark.name}</h2>
                 <div className="flex items-center justify-center gap-2">
                   <span className="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-sm border border-amber-500/30">
                     {landmark.category}
@@ -327,9 +299,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
               <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 mb-6 border border-white/10">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="w-5 h-5 text-cyan-400" />
-                  <h3 className="text-white font-semibold">
-                    AI-Generated Summary
-                  </h3>
+                  <h3 className="text-white font-semibold">AI-Generated Summary</h3>
                 </div>
                 <p className="text-white/80 leading-relaxed">{aiSummary}</p>
               </div>
@@ -341,11 +311,9 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
                     <Zap className="w-5 h-5 text-yellow-400" />
                     <span className="text-white/70 text-sm">Experience</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
-                    +{earnedXP} XP
-                  </p>
+                  <p className="text-2xl font-bold text-white">+{earnedXP} XP</p>
                 </div>
-
+                
                 <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-4 border border-purple-500/30">
                   <div className="flex items-center gap-2 mb-2">
                     <Trophy className="w-5 h-5 text-purple-400" />
@@ -357,13 +325,15 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button
+                <button 
                   onClick={handleComplete}
                   className="w-full bg-gradient-to-r from-amber-600 to-orange-500 text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
                 >
                   Continue Exploring
                 </button>
-                <button className="w-full bg-white/10 backdrop-blur-sm text-white py-4 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all">
+                <button 
+                  className="w-full bg-white/10 backdrop-blur-sm text-white py-4 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all"
+                >
                   Share Discovery
                 </button>
               </div>
@@ -375,9 +345,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
                   Did you know?
                 </h4>
                 <p className="text-white/70 text-sm">
-                  You're the {Math.floor(Math.random() * 500) + 100}th explorer
-                  to discover this landmark! Keep exploring to unlock more
-                  achievements.
+                  You're the {Math.floor(Math.random() * 500) + 100}th explorer to discover this landmark! Keep exploring to unlock more achievements.
                 </p>
               </div>
             </div>
@@ -386,12 +354,13 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
       </div>
 
       {/* Bottom Hint Text */}
-      {(scanningState === "initializing" || scanningState === "scanning") && (
+      {(scanningState === 'initializing' || scanningState === 'scanning') && (
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
           <p className="text-white/70 text-center text-sm">
-            {scanningState === "initializing"
-              ? "Preparing AR camera..."
-              : "Hold steady and ensure the landmark is clearly visible"}
+            {scanningState === 'initializing' ? 
+              'Preparing AR camera...' : 
+              'Hold steady and ensure the landmark is clearly visible'
+            }
           </p>
         </div>
       )}
@@ -403,9 +372,7 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
             opacity: 1;
           }
           100% {
-            transform: translateY(300px) translateX(${
-              Math.random() * 200 - 100
-            }px) rotate(720deg);
+            transform: translateY(300px) translateX(${Math.random() * 200 - 100}px) rotate(720deg);
             opacity: 0;
           }
         }
