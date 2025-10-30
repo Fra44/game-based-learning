@@ -2,6 +2,11 @@ import { useMemo, useState } from 'react';
 import { X, Book, Search, Trophy, BarChart3 } from 'lucide-react';
 import LandmarkDetail from './LandmarkDetail';
 
+// Use the same main images as LandmarkDetail for thumbnails
+const nidarosImage = new URL('../assets/nidaros_cathedral.jpg', import.meta.url).href;
+const kristianMain = new URL('../assets/Kristiansten_Festning_sunrise_red_canon.jpg', import.meta.url).href;
+const cologne0 = new URL('../assets/cologne_0.jpg', import.meta.url).href;
+
 export interface Landmark {
   id: number;
   name: string;
@@ -36,6 +41,14 @@ const Museum = ({ cityName = 'Your City', items, onClose }: MuseumProps) => {
     const q = query.toLowerCase();
     return base.filter(i => i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
   }, [activeTab, items, query]);
+
+  const getThumbnail = (name: string) => {
+    if (name === 'Nidaros Cathedral') return nidarosImage;
+    if (name === 'Kristiansten Fortress') return kristianMain;
+    if (name === 'Cologne Cathedral') return cologne0;
+    // default placeholder
+    return `https://placehold.co/600x400/png?text=${encodeURIComponent(name)}`;
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-gradient-to-b from-amber-50 to-white overflow-hidden">
@@ -100,7 +113,7 @@ const Museum = ({ cityName = 'Your City', items, onClose }: MuseumProps) => {
               >
                 <div className="overflow-hidden rounded-xl mb-3 border border-amber-200">
                   <img 
-                    src={`https://placehold.co/600x400/png?text=${encodeURIComponent(item.name)}`}
+                    src={getThumbnail(item.name)}
                     alt={`${item.name} thumbnail`} 
                     className="w-full h-32 object-cover group-hover:scale-105 transition-transform"
                   />

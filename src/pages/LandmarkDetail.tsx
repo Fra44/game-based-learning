@@ -10,6 +10,10 @@ const kristianMain = new URL('../assets/Kristiansten_Festning_sunrise_red_canon.
 const kristian2 = new URL('../assets/fortress2.jpg', import.meta.url).href;
 const kristian3 = new URL('../assets/fortress3.jpg', import.meta.url).href;
 const kristian4 = new URL('../assets/fortress4.jpg', import.meta.url).href;
+const cologne0 = new URL('../assets/cologne_0.jpg', import.meta.url).href;
+const cologne1 = new URL('../assets/cologne_1.png', import.meta.url).href;
+const cologne2 = new URL('../assets/cologne_2.jpg', import.meta.url).href;
+const cologne3 = new URL('../assets/cologne_3.jpg', import.meta.url).href;
 
 interface LandmarkBasic {
   id: number;
@@ -102,6 +106,8 @@ const LandmarkDetail = ({ landmark, onClose, photos = [] }: LandmarkDetailProps)
                 ? nidarosImage // use the image located at `src/assets/nidaros_cathedral.jpg`
                 : landmark.name === 'Kristiansten Fortress'
                 ? kristianMain
+                : landmark.name === 'Cologne Cathedral'
+                ? cologne0
                 : `https://placehold.co/1200x700/png?text=${encodeURIComponent(landmark.name)}`
             }
             alt={`${landmark.name} photo`}
@@ -135,6 +141,8 @@ const LandmarkDetail = ({ landmark, onClose, photos = [] }: LandmarkDetailProps)
                 ? [nidaros1Image, nidaros01Image, nidaros712Image]
                 : landmark.name === 'Kristiansten Fortress'
                 ? [kristian2, kristian3, kristian4]
+                : landmark.name === 'Cologne Cathedral'
+                ? [cologne1, cologne2, cologne3]
                 : [
                     `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}`,
                     `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+2`,
