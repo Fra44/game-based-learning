@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { MapPin, Compass, Book, Trophy, User, Camera } from 'lucide-react';
+import { MapPin, Compass, Book, Trophy, User, Camera, Brain } from 'lucide-react';
+import QuizPage from './QuizPage';
 import DiscoveryScanner from './DiscoveryScanner';
 import LandmarkDetail from './LandmarkDetail';
 import Museum from './Museum';
@@ -22,6 +23,7 @@ const CologneExplore = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [landmarkToShow, setLandmarkToShow] = useState<Landmark | null>(null);
   const [showMuseum, setShowMuseum] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   // Landmark data for Cologne (sample positions)
   const [landmarks, setLandmarks] = useState([
@@ -58,6 +60,8 @@ const CologneExplore = () => {
     setSelectedLandmark(null);
   };
 
+  if (showQuiz) return <QuizPage onClose={() => setShowQuiz(false)} />;
+
   return (
     <div className="h-screen w-full bg-amber-50 flex flex-col relative overflow-hidden">
       {/* Cologne map background */}
@@ -91,6 +95,14 @@ const CologneExplore = () => {
               aria-label="Open Digital Museum"
             >
               <Book className="w-5 h-5 text-amber-800" />
+            </button>
+            <button 
+              className="p-2 rounded-full bg-white shadow-sm"
+              onClick={() => setShowQuiz(true)}
+              aria-label="Open Quiz"
+              title="Take a quiz"
+            >
+              <Brain className="w-5 h-5 text-amber-800" />
             </button>
             <button className="p-2 rounded-full bg-white shadow-sm">
               <Trophy className="w-5 h-5 text-amber-800" />
