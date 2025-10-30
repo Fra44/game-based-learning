@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { X, MapPin, Sparkles, Trophy, Star, Zap, Camera } from 'lucide-react';
 
+// Resolve local assets via Vite's import.meta.url so TypeScript doesn't need custom declarations for .jpg
+const nidarosImage = new URL('../assets/nidaros_cathedral.jpg', import.meta.url).href;
+const nidaros1Image = new URL('../assets/nidaros_1.jpg', import.meta.url).href;
+const nidaros01Image = new URL('../assets/Nidaros_Cathedral_01.jpg', import.meta.url).href;
+const nidaros712Image = new URL('../assets/Nidarosdomen_7.1.2.jpg', import.meta.url).href;
+const kristianMain = new URL('../assets/Kristiansten_Festning_sunrise_red_canon.jpg', import.meta.url).href;
+const kristian2 = new URL('../assets/fortress2.jpg', import.meta.url).href;
+const kristian3 = new URL('../assets/fortress3.jpg', import.meta.url).href;
+const kristian4 = new URL('../assets/fortress4.jpg', import.meta.url).href;
+
 interface LandmarkBasic {
   id: number;
   name: string;
@@ -86,9 +96,15 @@ const LandmarkDetail = ({ landmark, onClose, photos = [] }: LandmarkDetailProps)
 
         {/* Image */}
         <div className="overflow-hidden rounded-2xl border border-white/10 mb-6 shadow-xl">
-          <img 
-            src={`https://placehold.co/1200x700/png?text=${encodeURIComponent(landmark.name)}`}
-            alt={`${landmark.name} placeholder`} 
+          <img
+            src={
+              landmark.name === 'Nidaros Cathedral'
+                ? nidarosImage // use the image located at `src/assets/nidaros_cathedral.jpg`
+                : landmark.name === 'Kristiansten Fortress'
+                ? kristianMain
+                : `https://placehold.co/1200x700/png?text=${encodeURIComponent(landmark.name)}`
+            }
+            alt={`${landmark.name} photo`}
             className="w-full h-auto object-cover"
             loading="lazy"
           />
@@ -112,12 +128,20 @@ const LandmarkDetail = ({ landmark, onClose, photos = [] }: LandmarkDetailProps)
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {(photos.length > 0 ? photos : [
-              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}`,
-              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+2`,
-              `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+3`
-            ]).map((src, idx) => (
-              <img key={idx} src={src} alt={`${landmark.name} ${idx+1}`} className="w-full h-28 object-cover rounded-lg border border-white/10" />
+            {(
+              photos.length > 0
+                ? photos
+                : landmark.name === 'Nidaros Cathedral'
+                ? [nidaros1Image, nidaros01Image, nidaros712Image]
+                : landmark.name === 'Kristiansten Fortress'
+                ? [kristian2, kristian3, kristian4]
+                : [
+                    `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}`,
+                    `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+2`,
+                    `https://placehold.co/400x300/png?text=${encodeURIComponent(landmark.name)}+Photo+3`
+                  ]
+            ).map((src, idx) => (
+              <img key={idx} src={src} alt={`${landmark.name} ${idx + 1}`} className="w-full h-28 object-cover rounded-lg border border-white/10" />
             ))}
           </div>
         </div>

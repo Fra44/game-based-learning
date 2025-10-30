@@ -25,15 +25,21 @@ const WatercolorAtlasExplore = () => {
 
   // Landmark data - discovered vs undiscovered
   const [landmarks, setLandmarks] = useState([
-    { id: 1, name: 'Nidaros Cathedral', x: 45, y: 40, discovered: true, category: 'Historic', year: '1070', metersAway: 100 },
-    { id: 2, name: 'Kristiansten Fortress', x: 65, y: 25, discovered: true, category: 'Military', year: '1681', metersAway: 300 },
-    { id: 3, name: 'Old Town Bridge', x: 65, y: 50, discovered: false, category: 'Architecture', year: '1861', metersAway: 50 },
+  // moved pins: Nidaros -> red cross (left), Kristiansten -> blue cross (right)
+  { id: 1, name: 'Nidaros Cathedral', x: 10, y: 50, discovered: true, category: 'Historic', year: '1070', metersAway: 100 },
+  { id: 2, name: 'Kristiansten Fortress', x: 89, y: 45, discovered: true, category: 'Military', year: '1681', metersAway: 300 },
+    { id: 3, name: 'Old Town Bridge', x: 62, y: 14, discovered: false, category: 'Architecture', year: '1861', metersAway: 50 },
     { id: 4, name: 'Rockheim Museum', x: 30, y: 60, discovered: false, category: 'Culture', year: '2010', metersAway: 125 },
-    { id: 5, name: 'Stiftsgården', x: 10, y: 35, discovered: false, category: 'Royal', year: '1778', metersAway: 500 },
+    { id: 5, name: 'Stiftsgården', x: 7, y: 39, discovered: false, category: 'Royal', year: '1778', metersAway: 500 },
   ]);
 
   const discoveredCount = landmarks.filter(l => l.discovered).length;
   const totalCount = landmarks.length;
+
+  // Position the user indicator near Old Town Bridge if present
+  const oldBridge = landmarks.find(l => l.name === 'Old Town Bridge');
+  const userX = oldBridge ? oldBridge.x + 6 : 50; // small offset to sit next to the pin
+  const userY = oldBridge ? oldBridge.y + 2: 50;
 
   // Handle discovery completion
   const handleDiscoveryComplete = (landmarkId: number) => {
@@ -57,7 +63,7 @@ const WatercolorAtlasExplore = () => {
     <div className="h-screen w-full bg-amber-50 flex flex-col relative overflow-hidden">
       {/* background imaage (assets/ChatGPT_background.png)  */}
       <div className="absolute inset-0">
-        <img src={'/src/assets/ChatGPT_background.png'} alt="Background" className="object-cover w-full h-full opacity-50"  />
+        <img src={'/src/assets/Group 5.png'} alt="Background" className="object-cover w-full h-full opacity-50"  />
       </div>
 
       {/* Watercolor texture overlay */}
@@ -155,8 +161,14 @@ const WatercolorAtlasExplore = () => {
                   <MapPin className="w-6 h-6 text-white" fill="white" />
                 </div>
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                  <span className="text-xs font-medium text-amber-900 bg-white px-2 py-1 rounded shadow-sm border border-amber-200">
-                    {landmark.name}
+                  <span className="text-xs font-medium text-amber-900 bg-white px-2 py-1 rounded shadow-sm border border-amber-200 text-center">
+                    {landmark.name.includes('\n') ? (
+                      landmark.name.split('\n').map((line, idx) => (
+                        <span key={idx} className="block">{line}</span>
+                      ))
+                    ) : (
+                      landmark.name
+                    )}
                   </span>
                 </div>
               </div>
@@ -178,8 +190,8 @@ const WatercolorAtlasExplore = () => {
           </button>
         ))}
 
-        {/* User location indicator */}
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
+        {/* User location indicator (placed next to Old Town Bridge) */}
+        <div className="absolute z-40" style={{ left: `${userX}%`, top: `${userY}%`, transform: 'translate(-50%, -50%)' }}>
           <div className="relative">
             <div className="absolute inset-0 bg-blue-400 rounded-full animate-ping opacity-75"></div>
             <div className="relative w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg"></div>

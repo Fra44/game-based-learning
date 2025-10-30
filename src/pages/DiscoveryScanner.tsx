@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, X, Sparkles, Trophy, Star, MapPin, Zap, CheckCircle } from 'lucide-react';
 
+// Local scanning background image (place the file at src/assets/old_bridge_scan.jpg)
+const oldBridgeScan = new URL('../assets/old_bridge_scan.jpg', import.meta.url).href;
+
 interface Landmark {
   id: number;
   name: string;
@@ -112,12 +115,21 @@ const DiscoveryScanner: React.FC<DiscoveryScannerProps> = ({
     <div className="fixed inset-0 z-50 bg-black">
       {/* AR Camera View Simulation */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-        {/* Camera feed simulation with subtle animation */}
-        <div 
+        {/* Camera feed simulation with subtle animation or photo while scanning */}
+        <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23noise)" opacity="0.05" /%3E%3C/svg%3E")',
-            animation: 'grain 0.5s steps(10) infinite'
+            // Show the photo only while scanning. During 'recognizing' (analyzing image) remove the background entirely.
+            backgroundImage:
+              scanningState === 'scanning'
+                ? `url('${oldBridgeScan}')`
+                : scanningState === 'recognizing'
+                ? 'none'
+                : 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23noise)" opacity="0.05" /%3E%3C/svg%3E")',
+            backgroundSize: scanningState === 'scanning' ? 'cover' : undefined,
+            backgroundPosition: scanningState === 'scanning' ? 'center' : undefined,
+            // Only animate grain when using the SVG noise background
+            animation: scanningState === 'scanning' || scanningState === 'recognizing' ? undefined : 'grain 0.5s steps(10) infinite'
           }}
         />
         
